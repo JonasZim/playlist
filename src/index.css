@@ -1,0 +1,41 @@
+.songContainer {
+    height: 50px;
+    background: white;
+    border: 5px;
+}
+
+.container {
+    display: flex;
+    height: 250px;
+    width: 250px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.playlistContainer {
+    display: flex;
+    flex-direction: row;
+    background: #ddd
+}
+
+.left-col {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ddd;
+}
+
+.center-col {
+    flex: 1;
+    background: #aaa;
+    overflow-y: scroll;
+}
+
+.right-col {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #e7e7e7;
+}
