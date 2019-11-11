@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 const Playlist = require('./playlist').default;
 
 export default class PlaylistContainer extends React.Component {
