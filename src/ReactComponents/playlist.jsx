@@ -2,6 +2,7 @@ import React from 'react';
 
 const Song = require('./song').default;
 const NameForm = require('./formForSongCreation').default;
+const dbCon = require('../mongoDB');
 
 export default class Playlist extends React.Component {
   constructor(props) {
@@ -10,9 +11,28 @@ export default class Playlist extends React.Component {
     this.state = {
       songList: [],
     };
+    dbCon.createCrapped(this.props.name);
   }
 
-  addNewSong(name, link) {
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData() {
+    dbCon.getSongsForPlaylist(this.props.name).then(songs => {
+      songs.forEach(song => {
+        this.loadSong(song[0].name, song[0].link);
+      });
+    });
+  }
+
+  getSongs() {
+    return this.state.songList.map(song => {
+      return { name: song.props.name, link: song.props.link };
+    });
+  }
+
+  loadSong(name, link) {
     const state = this.state.songList;
 
     this.setState({
@@ -27,11 +47,31 @@ export default class Playlist extends React.Component {
     });
   }
 
+  addNewSong(name, link) {
+    const state = this.state.songList;
+
+    this.setState({
+      songList: state.concat(
+        <Song
+          name={name}
+          link={link}
+          key={state.length + 1}
+          id={state.length + 1}
+          onDelete={this.handleDelete.bind(this)}
+        />),
+    }, () => {
+      console.log(Object.assign({}, this.getSongs()));
+      dbCon.savePlaylist(this.props.name, Object.assign({}, this.getSongs()));
+    });
+  }
+
   handleDelete(id) {
     const lists = this.state.songList.filter(list => {
       return list.props.id !== id;
     });
     this.setState({ songList: lists });
+
+    dbCon.savePlaylist(this.props.name, this.getSongs());
   }
 
   render() {

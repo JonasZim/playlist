@@ -1,6 +1,7 @@
 import React from 'react';
 
 const Playlist = require('./playlist').default;
+const { getPlaylistNames } = require('../mongoDB');
 
 export default class PlaylistContainer extends React.Component {
   constructor(props) {
@@ -11,18 +12,29 @@ export default class PlaylistContainer extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData() {
+    getPlaylistNames().then((pNames) => {
+      pNames.forEach(name => {
+        this.addNewPlaylist(name.name);
+      });
+    });
+  }
+
   renderInput() {
     return (
-      <input onKeyPress={this.keyPressed.bind(this)}
-             value={this.state.input}
+      <input
+        onKeyPress={this.keyPressed.bind(this)}
+        value={this.state.input}
       />
     );
   }
 
   handleDelete(id) {
-    const lists = this.state.playlists.filter(list => {
-      return list.props.id !== id;
-    });
+    const lists = this.state.playlists.filter(list => list.props.id !== id);
     this.setState({ playlists: lists });
   }
 
